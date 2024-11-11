@@ -1,9 +1,8 @@
 {
   "redirects": [
     {
-      "source": "/old-path",
-      "destination": "/new-path",
-      "permanent": true
+      "source": "/dsc",
+      "destination": "https://dsc-srv.lamps.lol"
     }
   ],
   "cleanUrls": true
