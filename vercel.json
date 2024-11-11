@@ -5,8 +5,6 @@
       "destination": "/new-path",
       "permanent": true
     }
-  ]
-}
-{
+  ],
   "cleanUrls": true
 }
