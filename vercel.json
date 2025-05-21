@@ -1,8 +1,8 @@
 {
   "redirects": [
     {
-      "source": "/dsc",
-      "destination": "https://dsc-srv.lamps.lol"
+      "source": "/discord",
+      "destination": "https://discord.gg/NeEwnNFs"
     }
   ],
   "cleanUrls": true
