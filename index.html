@@ -11,5 +11,22 @@
     <p>I code projects and i also code stupid projects sometimes.</p>
     <p>Click the hyperlink to visit <a href="https://youtube.com/@ilovelampadaire">my youtube channel</a>.</p>
     <!-- <audio hidden="true" src="Tides.mp3" loop="true" autoplay="true"></audio> !-->
+    <audio id="music" hidden="true" volume="0.5" autoplay="true">
+    </audio>
+    <script type="text/javascript">
+        function addAudio() {
+            fileArray = ["Blueshift.mp3", "Lisa.mp3", "New_Touch.mp3", "Tides.mp3"];
+            var num = Math.floor(Math.random() * fileArray.length);
+            var x = document.getElementById("music");
+            x.innerHTML = "";
+            x.innerHTML += '<source src="files/assets/songs/' + fileArray[num] + '" type="audio/mpeg">';
+            x.load();
+            x.play();
+        }
+        addAudio();
+        document.getElementById("music").addEventListener('ended', function() {
+            addAudio();
+        });
+    </script>
 </body>
 </html>
