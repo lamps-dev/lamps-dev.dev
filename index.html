@@ -17,6 +17,8 @@
     </audio>
     <script type="text/javascript">
         let fileArray = [];
+        let musicStarted = false;
+        
         async function loadPlaylist() {
             try {
                 const response = await fetch('files/assets/songs/playlist.json');
@@ -24,25 +26,54 @@
                 fileArray = data.songs;
                 addAudio();
             } catch (error) {
+                console.error('Failed to load playlist:', error);
             }
         }
+        
         function addAudio() {
             if (fileArray.length === 0) {
                 return;
             }
+            
             const randomIndex = Math.floor(Math.random() * fileArray.length);
             const songName = fileArray[randomIndex];
             const audioElement = document.getElementById("music");
+            audioElement.volume = 0.1;
             audioElement.innerHTML = "";
             audioElement.innerHTML += `<source src="files/assets/songs/${songName}" type="audio/mpeg">`;
+            
             audioElement.load();
+            audioElement.play().catch(error => {
+                console.log('Autoplay blocked, waiting for user interaction');
+                if (!musicStarted) {
+                    document.addEventListener('click', startMusic, { once: true });
+                    document.addEventListener('keydown', startMusic, { once: true });
+                }
+            });
         }
+        
+        function startMusic() {
+            const audioElement = document.getElementById("music");
+            musicStarted = true;
+            audioElement.play().catch(error => {
+                console.error('Still cannot play:', error);
+            });
+        }
+
         document.getElementById("music").addEventListener('ended', function() {
             addAudio();
         });
+
+        document.getElementById("music").addEventListener('error', function() {
+            console.error('Error loading audio file, trying next song...');
+            setTimeout(addAudio, 1000);
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             loadPlaylist();
         });
+    </script>
 </body>
 </html>
+
 
