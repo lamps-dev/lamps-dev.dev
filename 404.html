@@ -14,18 +14,61 @@
       <audio id="music" hidden="true" volume="0.1" autoplay="true">
     </audio>
     <script type="text/javascript">
-        function addAudio() {
-            fileArray = ["Blueshift.mp3", "Lisa.mp3", "New_Touch.mp3", "Tides.mp3", "Far_Apart.mp3", "Memory_Bank.mp3", "The_End.mp3"];
-            var num = Math.floor(Math.random() * fileArray.length);
-            var x = document.getElementById("music");
-            x.innerHTML = "";
-            x.innerHTML += '<source src="files/assets/songs/' + fileArray[num] + '" type="audio/mpeg">';
-            x.load();
-            x.play();
+        let fileArray = [];
+        let musicStarted = false;
+        
+        async function loadPlaylist() {
+            try {
+                const response = await fetch('files/assets/songs/playlist.json');
+                const data = await response.json();
+                fileArray = data.songs;
+                addAudio();
+            } catch (error) {
+                console.error('Failed to load playlist:', error);
+            }
         }
-        addAudio();
+        
+        function addAudio() {
+            if (fileArray.length === 0) {
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * fileArray.length);
+            const songName = fileArray[randomIndex];
+            const audioElement = document.getElementById("music");
+            audioElement.volume = 0.1;
+            audioElement.innerHTML = "";
+            audioElement.innerHTML += `<source src="files/assets/songs/${songName}" type="audio/mpeg">`;
+            
+            audioElement.load();
+            audioElement.play().catch(error => {
+                console.log('Autoplay blocked, waiting for user interaction');
+                if (!musicStarted) {
+                    document.addEventListener('click', startMusic, { once: true });
+                    document.addEventListener('keydown', startMusic, { once: true });
+                }
+            });
+        }
+        
+        function startMusic() {
+            const audioElement = document.getElementById("music");
+            musicStarted = true;
+            audioElement.play().catch(error => {
+                console.error('Still cannot play:', error);
+            });
+        }
+
         document.getElementById("music").addEventListener('ended', function() {
             addAudio();
+        });
+
+        document.getElementById("music").addEventListener('error', function() {
+            console.error('Error loading audio file, trying next song...');
+            setTimeout(addAudio, 1000);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPlaylist();
         });
     </script>
 </body>
