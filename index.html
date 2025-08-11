@@ -16,19 +16,33 @@
     <audio id="music" hidden="true" volume="0.1" autoplay="true">
     </audio>
     <script type="text/javascript">
-        function addAudio() {
-            fileArray = ["Blueshift.mp3", "Lisa.mp3", "New_Touch.mp3", "Tides.mp3", "Far_Apart.mp3", "Memory_Bank.mp3", "The_End.mp3"];
-            var num = Math.floor(Math.random() * fileArray.length);
-            var x = document.getElementById("music");
-            x.innerHTML = "";
-            x.innerHTML += '<source src="files/assets/songs/' + fileArray[num] + '" type="audio/mpeg">';
-            x.load();
-            x.play();
+        let fileArray = [];
+        async function loadPlaylist() {
+            try {
+                const response = await fetch('files/assets/songs/playlist.json');
+                const data = await response.json();
+                fileArray = data.songs;
+                addAudio();
+            } catch (error) {
+            }
         }
-        addAudio();
+        function addAudio() {
+            if (fileArray.length === 0) {
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * fileArray.length);
+            const songName = fileArray[randomIndex];
+            const audioElement = document.getElementById("music");
+            audioElement.innerHTML = "";
+            audioElement.innerHTML += `<source src="files/assets/songs/${songName}" type="audio/mpeg">`;
+            audioElement.load();
+        }
         document.getElementById("music").addEventListener('ended', function() {
             addAudio();
         });
-    </script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPlaylist();
+        });
 </body>
 </html>
+
