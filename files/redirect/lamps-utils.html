@@ -1,70 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
- <script>
-    const modrinthSlug = "lamps-utils";
-    const giteaRepoUrl = "https://git.lamps-dev.dev/api/v1/repos/lamps-dev/cdn/releases";
-    const curseforgeUrl = "https://www.curseforge.com/minecraft/mc-mods/lamps-utils";
-    const finalFallbackUrl = "https://example.com";
-
-    setTimeout(() => {
-      // Step 1: Try Modrinth
-      fetch(`https://api.modrinth.com/v2/project/${modrinthSlug}`)
-        .then(res => {
-          if (!res.ok) throw new Error("not found");
-          return fetch(`https://api.modrinth.com/v2/project/${modrinthSlug}/version`);
-        })
-        .then(res => res.json())
-        .then(versions => {
-          const release = versions.find(v => v.version_type === "release");
-          const latest = release || versions[0];
-          if (latest && latest.files.length > 0) {
-            const jar = latest.files.find(f => f.filename.endsWith(".jar")) || latest.files[0];
-            window.location.href = jar.url;
-          } else {
-            throw new Error("no files");
-          }
-        })
-        .catch(() => {
-          // Step 2: Try Gitea
-          fetch(giteaRepoUrl, { signal: AbortSignal.timeout(5000) })
-            .then(res => {
-              if (!res.ok) throw new Error("gitea down");
-              return res.json();
-            })
-            .then(releases => {
-              if (releases.length > 0) {
-                const latest = releases[0];
-                const jar = latest.assets.find(a => a.name.endsWith(".jar"));
-                if (jar) {
-                  window.location.href = jar.browser_download_url;
-                } else {
-                  throw new Error("no jar");
-                }
-              } else {
-                throw new Error("no releases");
-              }
-            })
-            .catch((err) => {
-              // Step 3: Gitea failed or no release — check why
-              if (err.message === "no releases" || err.message === "no jar") {
-                // Gitea is up but no valid release -> CurseForge
-                window.location.href = curseforgeUrl;
-              } else {
-                // Gitea is straight up down or timed out
-                // Step 4: Try CurseForge, if all else fails -> final fallback
-                fetch(curseforgeUrl, { method: "HEAD", mode: "no-cors", signal: AbortSignal.timeout(5000) })
-                  .then(() => {
-                    window.location.href = curseforgeUrl;
-                  })
-                  .catch(() => {
-                    window.location.href = finalFallbackUrl;
-                  });
-              }
-            });
-        });
-    }, 1000);
-  </script>
+   <meta http-equiv="refresh" content="1;url=https://git.lamps-dev.dev/lamps-dev/cdn/releases/download/latest/lamps-utils-1.5.0.jar">
 </head>
 <body>
   <p>Redirecting to modrinth.com... Please wait a few seconds..</p>
