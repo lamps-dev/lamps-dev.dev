@@ -1,4 +1,5 @@
-# lamps-dev.dev
-Website for lamps-dev.dev.
-
-Check it out [here](https://lamps-dev.dev).
+# (OLD) lamps-dev.dev
+Old portfolio for old.lamps-dev.dev.
+Checkout the new portfolio at https://github.com/lamps-dev/astro-portfolio
+___
+Check it out [here](https://old.lamps-dev.dev).
